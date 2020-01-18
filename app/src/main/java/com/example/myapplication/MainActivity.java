@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean watch = true;
 
+    ProgressDialog pd;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (dataList.size() == 0) {
+                    pd = new ProgressDialog(MainActivity.this);
+                    pd.setMessage("Please wait...");
+                    pd.setCancelable(false);
+                    pd.setCanceledOnTouchOutside(false);
+                    pd.show();
                     firebaseDatabase.getReference().child("JOB").addValueEventListener(new ValueEventListener() {
                         @SuppressLint("SetTextI18n")
                         @Override
@@ -60,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
                                 RecyclerView recyclerView = findViewById(R.id.recyclerview);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                                 recyclerView.setAdapter(new RecyclerAdapter(filterList()));
+
+                                dataList.clear();
+                                pd.dismiss();
                             }
                         }
 
